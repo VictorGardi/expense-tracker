@@ -1,0 +1,16 @@
+version: "3.3"
+services:
+  expense-tracker:
+    container_name: expense-tracker
+    volumes:
+      - ./:/app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - CONSUMER_KEY=${consumer_key}
+      - CONSUMER_SECRET=${consumer_secret}
+      - API_KEY=${api_key}
+    command: streamlit run dashboard.py --server.port=8501 --server.address=0.0.0.0
