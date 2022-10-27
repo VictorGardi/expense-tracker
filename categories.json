@@ -1,5 +1,5 @@
 {
     "food": ["hemköp", "willys", "mat", "coop", "ica"],
-    "car": ["restaurang", "restaurant", "pizza", "indiskt", "thai"],
-    "eat out": ["bensin", "bil"]
+    "car": ["bensin", "bil"],
+    "eat out": ["restaurang", "restaurant", "pizza", "indiskt", "thai"]
 }
