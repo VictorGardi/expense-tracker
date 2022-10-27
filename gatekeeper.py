@@ -8,7 +8,7 @@ from login import login
 def gatekeeper(func: Callable):
     authenticator = login()
     if st.session_state["authentication_status"]:
-        authenticator.logout("Logout", "main")
+        #authenticator.logout("Logout", "main")
         func()
     elif not st.session_state["authentication_status"]:
         st.error("Username/password is incorrect")
