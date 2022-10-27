@@ -1,0 +1,5 @@
+{
+    "food": ["hemköp", "willys", "mat", "coop", "ica"],
+    "car": ["restaurang", "restaurant", "pizza", "indiskt", "thai"],
+    "eat out": ["bensin", "bil"]
+}
