@@ -15,9 +15,9 @@ def get_expenses(start_date, end_date) -> pd.DataFrame:
     expenses = s.getExpenses(
         limit=1000, group_id="34890548", dated_after="2022-05-18T12:19:51.685496"
     )
-    expense_descriptions = [i.getDescription() for i in expenses]
-    expense_costs = [float(i.getCost()) for i in expenses]
-    expense_dates = [i.getDate() for i in expenses]
+    expense_descriptions = [i.getDescription() for i in expenses if i.getDeletedAt() is None]
+    expense_costs = [float(i.getCost()) for i in expenses if i.getDeletedAt() is None]
+    expense_dates = [i.getDate() for i in expenses if i.getDeletedAt() is None]
 
     df = pd.DataFrame()
     df["description"] = expense_descriptions
