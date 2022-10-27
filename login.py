@@ -1,3 +1,5 @@
+from typing import Callable
+
 import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
@@ -20,3 +22,15 @@ def login() -> stauth.Authenticate:
     st.session_state["name"] = name
     st.session_state["username"] = username
     return authenticator
+
+
+def gatekeeper(func: Callable):
+    _ = login()
+    # authenticator = login()
+    if st.session_state["authentication_status"]:
+        # authenticator.logout("Logout", "main")
+        func()
+    elif st.session_state["authentication_status"] is None:
+        st.warning("Please enter your username and password")
+    elif not st.session_state["authentication_status"]:
+        st.error("Username/password is incorrect")

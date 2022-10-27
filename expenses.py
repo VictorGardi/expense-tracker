@@ -30,6 +30,7 @@ def get_expenses(start_date, end_date) -> pd.DataFrame:
         "food",
         "other",
     )
+    df["category"] = np.where(df.description.str.contains("restaurang"), "eat_out", df.category)
     df["date"] = pd.to_datetime(df.date, format="%Y-%m-%dT%H:%M:%SZ")
     df["year-month"] = df.date.dt.strftime("%Y-%m")
     return df

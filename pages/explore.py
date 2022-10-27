@@ -3,7 +3,7 @@ import seaborn as sns
 import streamlit as st
 
 from expenses import get_expenses
-from gatekeeper import gatekeeper
+from login import gatekeeper
 
 
 def explore_expenses():
