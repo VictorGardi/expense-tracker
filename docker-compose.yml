@@ -10,7 +10,7 @@ services:
     ports:
       - "8501:8501"
     environment:
-      - CONSUMER_KEY=${consumer_key}
-      - CONSUMER_SECRET=${consumer_secret}
-      - API_KEY=${api_key}
+      - CONSUMER_KEY=${CONSUMER_KEY}
+      - CONSUMER_SECRET=${CONSUMER_SECRET}
+      - API_KEY=${API_KEY}
     command: streamlit run dashboard.py --server.port=8501 --server.address=0.0.0.0
