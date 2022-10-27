@@ -24,7 +24,7 @@ def dashboard():
     df_previous_month = df[df["year-month"] == previous_month]
 
     cols = st.columns(len(df.category.unique()))
-    for i, category in enumerate(df.category.unique()):
+    for i, category in enumerate(sorted(df.category.unique())):
         col = cols[i]
         category_cost_current_month = get_cost_per_category(df_current_month, category=category)
         category_cost_previous_month = get_cost_per_category(df_previous_month, category=category)
