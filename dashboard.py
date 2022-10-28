@@ -18,14 +18,19 @@ def dashboard():
     st.title("Expense tracker")
     st.sidebar.markdown("Dashboard")
     col1, col2 = st.columns(2)
+    # Create year selectbox
     chosen_year = col1.selectbox("Choose year of interest", ["2022", "2023", "2024"], index=0)
+
+    # Create month selectbox
     months = calendar.month_name[1:]
     current_month = int(datetime.today().strftime("%m")) - 1
-    chosen_month = col2.selectbox("Choose month of interest", months, index=current_month)
+    chosen_month: str = col2.selectbox("Choose month of interest", months, index=current_month)
     chosen_month_index: int = months.index(chosen_month)
+    # Use 15th as day in month since it exists for all months..
     month_as_str = chosen_year + "-" + str(chosen_month_index + 1) + "-15"
     month_as_datetime = datetime.strptime(month_as_str, "%Y-%m-%d")
     previous_month = (month_as_datetime + relativedelta(months=-1)).strftime("%Y-%m")
+    # TODO: add date input and choose only data from current and previous month..
     df = get_expenses(1, 2)
     df_current_month = df[df["year-month"] == month_as_datetime.strftime("%Y-%m")]
     df_previous_month = df[df["year-month"] == previous_month]
