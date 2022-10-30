@@ -41,6 +41,8 @@ def dashboard():
         col = cols[i]
         category_cost_current_month = get_cost_per_category(df_current_month, category=category)
         category_cost_previous_month = get_cost_per_category(df_previous_month, category=category)
+        if category_cost_current_month == 0 and category_cost_previous_month == 0:
+            continue
         col.metric(
             f"{category} costs",
             category_cost_current_month,
