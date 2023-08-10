@@ -5,6 +5,7 @@ __pycache__/
 
 #CUSTOM
 config.yml
+generate_hashed_passwords.py
 
 # C extensions
 *.so
