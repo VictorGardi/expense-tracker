@@ -19,7 +19,7 @@ def dashboard():
     st.sidebar.markdown("Dashboard")
     col1, col2 = st.columns(2)
     # Create year selectbox
-    chosen_year = col1.selectbox("Choose year of interest", ["2022", "2023", "2024"], index=0)
+    chosen_year = col1.selectbox("Choose year of interest", ["2022", "2023", "2024"], index=1)
 
     # Create month selectbox
     months = calendar.month_name[1:]
@@ -37,17 +37,34 @@ def dashboard():
 
     st.markdown(f"**Costs for {months[chosen_month_index]}**")
     cols = st.columns(len(df.category.unique()))
-    for i, category in enumerate(sorted(df.category.unique())):
-        col = cols[i]
+    categories = sorted(df.category.unique())
+    # make sure 'other' is placed last
+    categories.remove("other")
+    categories.append("other")
+    # define categories that do not contain any data for the current or previous
+    # month
+    invalid_categories = []
+    for col, category in zip(cols, categories):
         category_cost_current_month = get_cost_per_category(df_current_month, category=category)
         category_cost_previous_month = get_cost_per_category(df_previous_month, category=category)
+        if category_cost_current_month == 0:
+            invalid_categories.append(category)
         if category_cost_current_month == 0 and category_cost_previous_month == 0:
+            invalid_categories.append(category)
             continue
         col.metric(
             f"{category} costs",
-            category_cost_current_month,
-            (category_cost_current_month - category_cost_previous_month),
+            int(category_cost_current_month),
+            int(category_cost_current_month - category_cost_previous_month),
         )
+
+    st.markdown("**Detailed expenses in specific category**")
+    chosen_category = st.selectbox("Choose a specific category",
+                                   list(set(categories) -
+                                        set(invalid_categories)))
+    st.dataframe(df_current_month[df.category == chosen_category])
+
+
 
 
 if __name__ == "__main__":

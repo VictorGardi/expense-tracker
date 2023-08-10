@@ -1,6 +1,8 @@
 {
-    "food": ["hemköp", "willys", "mat", "coop", "ica"],
-    "car": ["bensin", "bil"],
-    "eat out": ["restaurang", "restaurant", "pizza", "indiskt", "thai", "max"],
-    "italy": ["rom", "rome", "italien", "pisa"]
+    "food": ["hemköp", "willys", "mat", "coop", "ica", "lidl"],
+    "car": ["bensin", "bil", "besiktning"],
+    "el": ["elräkning", "elfaktura"],
+    "eat out": ["restaurang", "restaurant", "pizza", "indiskt", "thai", "max", "burger king"],
+    "italy": ["rom", "rome", "italien", "pisa"],
+    "tromsoe": ["tromsö", "tromsoe", "troms"]
 }
