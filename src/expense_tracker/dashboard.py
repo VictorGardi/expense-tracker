@@ -4,7 +4,6 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 from dateutil.relativedelta import relativedelta
-
 from expenses import get_expenses
 from login import gatekeeper
 

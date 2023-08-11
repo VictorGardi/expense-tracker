@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-
 from expenses import get_expenses
 from login import gatekeeper
 
