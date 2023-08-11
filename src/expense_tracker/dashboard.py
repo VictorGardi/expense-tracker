@@ -4,8 +4,8 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 from dateutil.relativedelta import relativedelta
-from expenses import get_expenses
-from login import gatekeeper
+from expense_tracker.expenses import get_expenses
+from expense_tracker.login import gatekeeper
 
 
 def get_cost_per_category(df: pd.DataFrame, category: str) -> float:

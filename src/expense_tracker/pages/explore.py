@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from expenses import get_expenses
-from login import gatekeeper
+from expense_tracker.expenses import get_expenses
+from expense_tracker.login import gatekeeper
 
 
 def explore_expenses():
