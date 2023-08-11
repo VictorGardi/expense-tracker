@@ -59,12 +59,10 @@ def dashboard():
         )
 
     st.markdown("**Detailed expenses in specific category**")
-    chosen_category = st.selectbox("Choose a specific category",
-                                   list(set(categories) -
-                                        set(invalid_categories)))
+    chosen_category = st.selectbox(
+        "Choose a specific category", list(set(categories) - set(invalid_categories))
+    )
     st.dataframe(df_current_month[df.category == chosen_category])
-
-
 
 
 if __name__ == "__main__":
