@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#CUSTOM
+config.yml
+generate_hashed_passwords.py
+
 # C extensions
 *.so
 

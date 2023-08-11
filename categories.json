@@ -1,0 +1,9 @@
+{
+    "food": ["hemköp", "willys", "mat", "coop", "ica", "lidl"],
+    "car": ["bensin", "bil", "besiktning"],
+    "el": ["elräkning", "elfaktura"],
+    "eat out": ["restaurang", "restaurant", "pizza", "indiskt", "thai", "max", "burger king"],
+    "italy": ["rom", "rome", "italien", "pisa"],
+    "tromsoe": ["tromsö", "tromsoe", "troms"],
+    "income": ["såld", "inkomst", "sålt"]
+}
