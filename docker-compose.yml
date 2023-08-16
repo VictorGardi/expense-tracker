@@ -1,9 +1,11 @@
 version: "3.3"
 services:
   expense-tracker:
+    user: 0:0
     container_name: expense-tracker
     volumes:
       - ./:/app
+      - ./sqlite.db/:/app/sqlite.db
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,4 +15,5 @@ services:
       - CONSUMER_KEY=${CONSUMER_KEY}
       - CONSUMER_SECRET=${CONSUMER_SECRET}
       - API_KEY=${API_KEY}
+      - SQLITE_URI=/app/sqlite.db
     command: streamlit run src/expense_tracker/dashboard.py --server.port=8501 --server.address=0.0.0.0

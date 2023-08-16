@@ -1,6 +1,8 @@
 import calendar
 from datetime import datetime
+from math import ceil
 
+import numpy as np
 import pandas as pd
 import streamlit as st
 from dateutil.relativedelta import relativedelta
@@ -40,37 +42,43 @@ def dashboard():
     df_previous_month = df[df["year-month"] == previous_month]
 
     st.markdown(f"**Costs for {months[chosen_month_index]}**")
-    cols = st.columns(len(df.category.unique()))
     categories = sorted(df.category.unique())
+    cols = st.columns(3)
+    categories_per_column = ceil(len(categories) / len(cols))
     # make sure 'other' is placed last
-    categories.remove("other")
-    categories.append("other")
     # define categories that do not contain any data for the current or previous
     # month
     invalid_categories = []
-    for col, category in zip(cols, categories):
-        category_cost_current_month = get_cost_per_category(
-            df_current_month, category=category
-        )
-        category_cost_previous_month = get_cost_per_category(
-            df_previous_month, category=category
-        )
-        if category_cost_current_month == 0:
-            invalid_categories.append(category)
-        if category_cost_current_month == 0 and category_cost_previous_month == 0:
-            invalid_categories.append(category)
-            continue
-        col.metric(
-            f"{category}",
-            int(category_cost_current_month),
-            int(category_cost_current_month - category_cost_previous_month),
-        )
+    for i, col in enumerate(cols):
+        for category in np.array_split(categories, categories_per_column)[i]:
+            category_cost_current_month = get_cost_per_category(
+                df_current_month, category=category
+            )
+            category_cost_previous_month = get_cost_per_category(
+                df_previous_month, category=category
+            )
+            if category_cost_current_month == 0:
+                invalid_categories.append(category)
+            if category_cost_current_month == 0 and category_cost_previous_month == 0:
+                invalid_categories.append(category)
+                continue
+            col.metric(
+                f"{category}",
+                int(category_cost_current_month),
+                int(category_cost_current_month - category_cost_previous_month),
+            )
 
     st.markdown("**Detailed expenses in specific category**")
     chosen_category = st.selectbox(
         "Choose a specific category", list(set(categories) - set(invalid_categories))
     )
     st.dataframe(df_current_month[df.category == chosen_category])
+
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i : i + n]
 
 
 if __name__ == "__main__":
