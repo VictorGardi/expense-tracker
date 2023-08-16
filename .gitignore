@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 #CUSTOM
+sqlite.db
 config.yml
 generate_hashed_passwords.py
 

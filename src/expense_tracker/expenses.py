@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from splitwise import Splitwise
 
+from expense_tracker.db import connect_to_db, get_categories
+
 s = Splitwise(
     consumer_key=os.environ["CONSUMER_KEY"],
     consumer_secret=os.environ["CONSUMER_SECRET"],
@@ -29,6 +31,7 @@ def read_json(path_to_file: str) -> Dict:
 
 
 def get_expenses(start_date, end_date) -> pd.DataFrame:
+    conn = connect_to_db(os.environ.get("SQLITE_URI"))
     expenses = s.getExpenses(
         limit=1000, group_id="34890548", dated_after="2022-05-18T12:19:51.685496"
     )
@@ -44,8 +47,8 @@ def get_expenses(start_date, end_date) -> pd.DataFrame:
     df["date"] = expense_dates
     df["description_lowercase"] = df.description.str.lower()
     df["category"] = "other"
-    for category, words in read_json("categories.json").items():
-        df = add_category(df, words, category)
+    for category, tags in get_categories(conn).items():
+        df = add_category(df, tags, category)
     df["date"] = pd.to_datetime(df.date, format="%Y-%m-%dT%H:%M:%SZ")
     df["year-month"] = df.date.dt.strftime("%Y-%m")
     return df
