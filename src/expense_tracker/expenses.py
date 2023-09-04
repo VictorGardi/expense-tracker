@@ -47,6 +47,7 @@ def get_expenses(start_date, end_date) -> pd.DataFrame:
     df["date"] = expense_dates
     df["description_lowercase"] = df.description.str.lower()
     df["category"] = "other"
+    df.drop(df[df.description == "Payment"].index, inplace=True)
     for category, tags in get_categories(conn).items():
         df = add_category(df, tags, category)
     df["date"] = pd.to_datetime(df.date, format="%Y-%m-%dT%H:%M:%SZ")

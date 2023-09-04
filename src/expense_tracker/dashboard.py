@@ -38,19 +38,33 @@ def dashboard():
     previous_month = (month_as_datetime + relativedelta(months=-1)).strftime("%Y-%m")
     # TODO: add date input and choose only data from current and previous month..
     df = get_expenses(1, 2)
+
     df_current_month = df[df["year-month"] == month_as_datetime.strftime("%Y-%m")]
     df_previous_month = df[df["year-month"] == previous_month]
+    income_current_month = df_current_month[
+        df_current_month.category == "income"
+    ].cost.sum()
+    income_previous_month = df_previous_month[
+        df_previous_month.category == "income"
+    ].cost.sum()
+    df_current_month.drop(
+        df_current_month[df_current_month.category == "income"].index, inplace=True
+    )
+    df_previous_month.drop(
+        df_previous_month[df_previous_month.category == "income"].index, inplace=True
+    )
 
     st.markdown(f"**Costs for {months[chosen_month_index]}**")
-    categories = sorted(df.category.unique())
-    cols = st.columns(3)
+    categories = sorted(df_current_month.category.unique())
+    n_cols = 2 if len(categories) < 3 else 3
+    cols = st.columns(n_cols)
     categories_per_column = ceil(len(categories) / len(cols))
     # make sure 'other' is placed last
     # define categories that do not contain any data for the current or previous
     # month
     invalid_categories = []
     for i, col in enumerate(cols):
-        for category in np.array_split(categories, categories_per_column)[i]:
+        for category in np.array_split(categories, categories_per_column + 1)[i]:
             category_cost_current_month = get_cost_per_category(
                 df_current_month, category=category
             )
@@ -66,7 +80,21 @@ def dashboard():
                 f"{category}",
                 int(category_cost_current_month),
                 int(category_cost_current_month - category_cost_previous_month),
+                delta_color="inverse",
             )
+    col1, col2 = st.columns(2)
+    col1.metric(
+        "Total income",
+        int(income_current_month),
+        int(income_current_month - income_previous_month),
+    )
+
+    col2.metric(
+        "Total cost",
+        int(df_current_month.cost.sum()),
+        int(df_current_month.cost.sum() - df_previous_month.cost.sum()),
+        delta_color="inverse",
+    )
 
     st.markdown("**Detailed expenses in specific category**")
     chosen_category = st.selectbox(
