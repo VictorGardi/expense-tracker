@@ -1,6 +1,5 @@
 import calendar
 from datetime import datetime
-from math import ceil
 
 import numpy as np
 import pandas as pd
@@ -47,24 +46,22 @@ def dashboard():
     income_previous_month = df_previous_month[
         df_previous_month.category == "income"
     ].cost.sum()
-    df_current_month.drop(
-        df_current_month[df_current_month.category == "income"].index, inplace=True
-    )
-    df_previous_month.drop(
-        df_previous_month[df_previous_month.category == "income"].index, inplace=True
-    )
+    cost_current_month = int(df_current_month.cost.sum() - income_current_month)
+    cost_previous_month = int(df_previous_month.cost.sum() - income_previous_month)
+    net_expense_current_month = int(cost_current_month - income_current_month)
+    net_expense_previous_month = int(cost_previous_month - income_previous_month)
 
     st.markdown(f"**Costs for {months[chosen_month_index]}**")
     categories = sorted(df_current_month.category.unique())
     n_cols = 2 if len(categories) < 3 else 3
     cols = st.columns(n_cols)
-    categories_per_column = ceil(len(categories) / len(cols))
-    # make sure 'other' is placed last
     # define categories that do not contain any data for the current or previous
     # month
     invalid_categories = []
     for i, col in enumerate(cols):
-        for category in np.array_split(categories, categories_per_column + 1)[i]:
+        for category in np.array_split(categories, n_cols)[i]:
+            if category == "income":
+                continue
             category_cost_current_month = get_cost_per_category(
                 df_current_month, category=category
             )
@@ -82,19 +79,32 @@ def dashboard():
                 int(category_cost_current_month - category_cost_previous_month),
                 delta_color="inverse",
             )
-    col1, col2 = st.columns(2)
-    col1.metric(
-        "Total income",
-        int(income_current_month),
-        int(income_current_month - income_previous_month),
+    st.markdown(
+        """<hr style="height:10px;border:none;color:#333;background-color:#333;" /> """,
+        unsafe_allow_html=True,
     )
+    cols = st.columns(3)
+    with cols[0]:
+        st.metric(
+            "Total income",
+            int(income_current_month),
+            int(income_current_month - income_previous_month),
+        )
 
-    col2.metric(
-        "Total cost",
-        int(df_current_month.cost.sum()),
-        int(df_current_month.cost.sum() - df_previous_month.cost.sum()),
-        delta_color="inverse",
-    )
+    with cols[1]:
+        st.metric(
+            "Total expense",
+            cost_current_month,
+            int(cost_current_month - cost_previous_month),
+            delta_color="inverse",
+        )
+    with cols[2]:
+        st.metric(
+            "Net expense",
+            net_expense_current_month,
+            net_expense_current_month - net_expense_previous_month,
+            delta_color="inverse",
+        )
 
     st.markdown("**Detailed expenses in specific category**")
     chosen_category = st.selectbox(
