@@ -1,7 +1,6 @@
 version: "3.3"
 services:
   expense-tracker:
-    user: 0:0
     container_name: expense-tracker
     volumes:
       - ./:/app
@@ -9,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "8501:8501"
     environment:

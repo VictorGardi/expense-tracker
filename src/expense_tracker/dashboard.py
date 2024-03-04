@@ -21,7 +21,7 @@ def dashboard():
     col1, col2 = st.columns(2)
     # Create year selectbox
     chosen_year = col1.selectbox(
-        "Choose year of interest", ["2022", "2023", "2024"], index=1
+        "Choose year of interest", ["2022", "2023", "2024"], index=2
     )
 
     # Create month selectbox
