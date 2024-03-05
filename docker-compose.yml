@@ -4,7 +4,6 @@ services:
     container_name: expense-tracker
     volumes:
       - ./:/app
-      - ./sqlite.db/:/app/sqlite.db
     build:
       context: .
       dockerfile: Dockerfile

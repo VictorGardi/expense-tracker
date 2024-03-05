@@ -36,7 +36,7 @@ def dashboard():
     month_as_datetime = datetime.strptime(month_as_str, "%Y-%m-%d")
     previous_month = (month_as_datetime + relativedelta(months=-1)).strftime("%Y-%m")
     # TODO: add date input and choose only data from current and previous month..
-    df = get_expenses(1, 2)
+    df = get_expenses()
 
     df_current_month = df[df["year-month"] == month_as_datetime.strftime("%Y-%m")]
     df_previous_month = df[df["year-month"] == previous_month]

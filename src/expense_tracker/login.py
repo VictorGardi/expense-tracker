@@ -6,8 +6,12 @@ import yaml
 
 
 def login() -> stauth.Authenticate:
-    with open("config.yml") as file:
-        config = yaml.load(file, Loader=yaml.SafeLoader)
+    try:
+        with open("config.yml") as file:
+            config = yaml.load(file, Loader=yaml.SafeLoader)
+    except FileNotFoundError:
+        st.write("A config.yml file with login credentials needs to be declared.")
+        st.stop()
 
     authenticator = stauth.Authenticate(
         config["credentials"],
@@ -25,9 +29,7 @@ def login() -> stauth.Authenticate:
 
 def gatekeeper(func: Callable):
     _ = login()
-    # authenticator = login()
     if st.session_state["authentication_status"]:
-        # authenticator.logout("Logout", "main")
         func()
     elif st.session_state["authentication_status"] is None:
         st.warning("Please enter your username and password")

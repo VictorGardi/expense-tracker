@@ -1,49 +1,36 @@
-import sqlite3
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from expense_tracker.globals import ENGINE
+from expense_tracker.models import Category
 
-
-def connect_to_db(uri: str):
-    conn = sqlite3.connect(uri)
-    return conn
-
-
-def create_category_table(conn) -> None:
-    cursor = conn.cursor()
-    if not cursor.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='category';"
-    ):
-        cursor.execute("CREATE TABLE category (name TEXT, tags TEXT)")
-        conn.commit()
-
-
-def get_categories(conn) -> Dict[str, list]:
-    cursor = conn.cursor()
-    rows = cursor.execute("SELECT name, tags FROM category").fetchall()
-    return {category: tags.split(",") for category, tags in rows}
-
-
-def add_category(conn, category: str, tags: List[str]) -> Optional[Exception]:
-    cursor = conn.cursor()
-    data = {"name": category, "tags": ",".join(tags)}
-    sql = "INSERT INTO category (name, tags) VALUES (:name, :tags)"
+def get_categories() -> Union[Exception, Dict]:
     try:
-        cursor.execute(sql, data)
-        conn.commit()
-        return None
+        with Session(ENGINE) as session:
+            rows = session.scalars(select(Category)).all() 
+            return {row.name: row.tags.split(",") for row in rows}
     except Exception as e:
         return e
 
+def add_category(category: str, tags: List[str]) -> None:
+    with Session(ENGINE) as session:
+        session.add(Category(name=category, tags=",".join(tags)))
+        session.commit()
 
-def delete_category(conn, category: str) -> Optional[Exception]:
-    cursor = conn.cursor()
-    sql = f"DELETE FROM category WHERE name = '{category}';"
+
+def delete_category(category_name: str) -> Optional[Exception]:
     try:
-        cursor.execute(sql)
-        conn.commit()
-        return None
+        with Session(ENGINE) as session:
+            session.query(Category).filter(Category.name==category_name).delete()
+            session.commit()
     except Exception as e:
         return e
 
-
-if __name__ == "__main__":
-    cursor = connect_to_db("sqlite.db")
+def update_category(category_name: str, tags: list[str]) -> Optional[Exception]:
+    try:
+        with Session(ENGINE) as session:
+            session.query(Category).filter(Category.name == category_name).update({"tags": ",".join(tags)})
+            session.commit()
+    except Exception as e:
+        return e
+    
