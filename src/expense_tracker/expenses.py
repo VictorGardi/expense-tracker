@@ -30,6 +30,7 @@ def read_json(path_to_file: str) -> Dict:
         data = json.load(f)
     return data
 
+
 def prepare_data(data) -> pd.DataFrame:
     expense_descriptions = [
         i.getDescription() for i in data if i.getDeletedAt() is None
@@ -47,6 +48,7 @@ def prepare_data(data) -> pd.DataFrame:
     df["date"] = pd.to_datetime(df.date, format="%Y-%m-%dT%H:%M:%SZ")
     df["year-month"] = df.date.dt.strftime("%Y-%m")
     return df
+
 
 def get_expenses() -> pd.DataFrame:
     expenses = SPLITWISE.getExpenses(
