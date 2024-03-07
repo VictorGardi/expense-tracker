@@ -15,8 +15,11 @@ from expense_tracker.login import gatekeeper
 def get_cost_per_category(df: pd.DataFrame, category: str) -> float:
     return df[df.category == category].cost.sum()
 
+
 def plot_bars(df: pd.DataFrame) -> None:
-    grouped_df = df.groupby("year-month").aggregate({"cost": "sum", "year": "first", "month": "first"})
+    grouped_df = df.groupby("year-month").aggregate(
+        {"cost": "sum", "year": "first", "month": "first"}
+    )
     grouped_df.sort_values("month", inplace=True)
     fig = plt.figure(figsize=(10, 4))
     sns.barplot(grouped_df, x="month", y="cost", hue="year")
@@ -26,8 +29,10 @@ def plot_bars(df: pd.DataFrame) -> None:
 def get_cost(cost: pd.Series, income: float) -> int:
     return int(cost.sum() - income)
 
+
 def get_income(df: pd.DataFrame) -> float:
     return df[df.category == "income"].cost.sum()
+
 
 def generate_metrics(df: pd.DataFrame, current_month: str, previous_month: str) -> dict:
     metrics = {"current_month": {}, "previous_month": {}}
@@ -37,7 +42,9 @@ def generate_metrics(df: pd.DataFrame, current_month: str, previous_month: str) 
         temp_df = metrics[month]["data"]
         metrics[month]["income"] = get_income(temp_df)
         metrics[month]["cost"] = get_cost(temp_df.cost, metrics[month]["income"])
-        metrics[month]["net_expense"] = int(metrics[month]["cost"] - metrics[month]["income"])
+        metrics[month]["net_expense"] = int(
+            metrics[month]["cost"] - metrics[month]["income"]
+        )
     return metrics
 
 
@@ -57,7 +64,9 @@ def dashboard():
     # Create month selectbox
     months = calendar.month_name[1:]
     chosen_month = col2.selectbox(
-        "Choose month of interest", months, index=int(datetime.today().strftime("%m")) - 1
+        "Choose month of interest",
+        months,
+        index=int(datetime.today().strftime("%m")) - 1,
     )
     chosen_month_index: int = months.index(chosen_month)
     # Use 15th as day in month since it exists for all months..
@@ -103,7 +112,9 @@ def dashboard():
         st.metric(
             "Total income",
             int(metrics["current_month"]["income"]),
-            int(metrics["current_month"]["income"] - metrics["previous_month"]["income"]),
+            int(
+                metrics["current_month"]["income"] - metrics["previous_month"]["income"]
+            ),
         )
 
     with cols[1]:
@@ -117,7 +128,8 @@ def dashboard():
         st.metric(
             "Net expense",
             metrics["current_month"]["net_expense"],
-            metrics["current_month"]["net_expense"] - metrics["previous_month"]["net_expense"],
+            metrics["current_month"]["net_expense"]
+            - metrics["previous_month"]["net_expense"],
             delta_color="inverse",
         )
 
@@ -128,15 +140,27 @@ def dashboard():
     st.markdown(f"**Detailed expenses for {chosen_category}**")
     with cols[0]:
         st.metric(
-                f"Expenses for category {chosen_category} during {chosen_month}",
-                int(metrics["current_month"]["data"].query(f'category == "{chosen_category}"').cost.sum())
+            f"Expenses for category {chosen_category} during {chosen_month}",
+            int(
+                metrics["current_month"]["data"]
+                .query(f'category == "{chosen_category}"')
+                .cost.sum()
+            ),
         )
     with cols[1]:
         st.metric(
-                f"Mean expense per month for category: {chosen_category}",
-                int(category_df.groupby("year-month").aggregate({"cost": "sum", "year": "first", "month": "first"}).cost.mean())
+            f"Mean expense per month for category: {chosen_category}",
+            int(
+                category_df.groupby("year-month")
+                .aggregate({"cost": "sum", "year": "first", "month": "first"})
+                .cost.mean()
+            ),
         )
-    st.dataframe(metrics["current_month"]["data"][metrics["current_month"]["data"].category == chosen_category])
+    st.dataframe(
+        metrics["current_month"]["data"][
+            metrics["current_month"]["data"].category == chosen_category
+        ]
+    )
     st.markdown(f"**Bar plot showing historic expenses for {chosen_category}**")
     plot_bars(category_df)
     cols = st.columns(2)
