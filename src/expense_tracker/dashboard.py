@@ -138,6 +138,7 @@ def dashboard():
     )
     category_df = df[df.category == chosen_category]
     st.markdown(f"**Detailed expenses for {chosen_category}**")
+    cols = st.columns(2)
     with cols[0]:
         st.metric(
             f"Expenses for category {chosen_category} during {chosen_month}",
@@ -163,7 +164,6 @@ def dashboard():
     )
     st.markdown(f"**Bar plot showing historic expenses for {chosen_category}**")
     plot_bars(category_df)
-    cols = st.columns(2)
 
 
 if __name__ == "__main__":
