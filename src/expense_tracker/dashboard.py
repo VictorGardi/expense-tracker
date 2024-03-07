@@ -128,12 +128,12 @@ def dashboard():
     st.markdown(f"**Detailed expenses for {chosen_category}**")
     with cols[0]:
         st.metric(
-                f"Cost for category {chosen_category} during {chosen_month}",
+                f"Expenses for category {chosen_category} during {chosen_month}",
                 int(metrics["current_month"]["data"].query(f'category == "{chosen_category}"').cost.sum())
         )
     with cols[1]:
         st.metric(
-                f"Average cost per month for category: {chosen_category}",
+                f"Mean expense per month for category: {chosen_category}",
                 int(category_df.groupby("year-month").aggregate({"cost": "sum", "year": "first", "month": "first"}).cost.mean())
         )
     st.dataframe(metrics["current_month"]["data"][metrics["current_month"]["data"].category == chosen_category])
