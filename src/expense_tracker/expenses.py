@@ -47,6 +47,8 @@ def prepare_data(data) -> pd.DataFrame:
     df.drop(df[df.description == "Payment"].index, inplace=True)
     df["date"] = pd.to_datetime(df.date, format="%Y-%m-%dT%H:%M:%SZ")
     df["year-month"] = df.date.dt.strftime("%Y-%m")
+    df["year"] = df.date.dt.strftime("%Y")
+    df["month"] = df.date.dt.strftime("%m")
     return df
 
 
